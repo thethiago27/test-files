@@ -2,6 +2,7 @@ version: '3'
 
 services:
   upload-service:
+    container_name: upload-service
     build:
       context: ../../src/upload_service
     ports:
@@ -13,6 +14,7 @@ services:
       - localstack
 
   process-service:
+    container_name: process-service
     build:
       context: ../../src/process_service
     environment:
@@ -32,10 +34,14 @@ services:
 
   localstack:
     image: localstack/localstack
+    container_name: localstack
     ports:
       - "9324:4566"
     environment:
       - SERVICES=s3,sqs
       - DATA_DIR=/tmp/localstack/data
+      - DEBUG=${DEBUG:-0}
     volumes:
-      - ./localstack:/tmp/localstack/data
+      - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+

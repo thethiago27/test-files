@@ -3,8 +3,10 @@ import os
 import json
 import boto3
 import pandas as pd
+from sqlalchemy import create_engine
+
 from shared.database import db_session
-from shared.models import FileData
+from shared.models import FileData, Base
 
 s3 = boto3.client('s3')
 sqs = boto3.client('sqs')
@@ -12,6 +14,9 @@ sqs = boto3.client('sqs')
 S3_BUCKET_NAME = os.environ.get('S3_BUCKET_NAME')
 SQS_QUEUE_URL = os.environ.get('SQS_QUEUE_URL')
 DATABASE_URL = os.environ.get('DATABASE_URL')
+
+engine = create_engine(DATABASE_URL)
+Base.metadata.create_all(engine)
 
 
 def process_message(message):

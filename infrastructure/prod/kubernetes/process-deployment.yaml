@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: process-service
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: process-service
+  template:
+    metadata:
+      labels:
+        app: process-service
+    spec:
+      containers:
+      - name: process-service
+        image: your-docker-registry/process-service:latest
+        env:
+        - name: S3_BUCKET_NAME
+          value: file-service-bucket
+        - name: SQS_QUEUE_URL
+          value: https://sqs.aws-region.amazonaws.com/your-account-id/file-queue
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: database-credentials
+              key: database-url
