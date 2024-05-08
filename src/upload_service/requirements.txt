@@ -2,3 +2,4 @@ flask
 boto3
 flask
 flask-cors
+flask-swagger-ui
