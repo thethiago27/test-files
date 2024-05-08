@@ -1,0 +1,10 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: CloudFormation template for creating an S3 bucket
+
+Resources:
+  FileServiceBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: file-service-bucket
+      VersioningConfiguration:
+        Status: Enabled

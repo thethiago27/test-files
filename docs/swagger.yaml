@@ -1,0 +1,53 @@
+openapi: 3.0.0
+info:
+  title: File Service API
+  description: API for uploading and processing CSV files
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:5000/api/v1
+
+paths:
+  /upload:
+    post:
+      summary: Upload a CSV file
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FileUpload'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    FileUpload:
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+    UploadResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: File upload successful
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Invalid file type

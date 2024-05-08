@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+  upload-service:
+    build:
+      context: ../../src/upload_service
+    ports:
+      - "5000:5000"
+    environment:
+      - S3_BUCKET_NAME=local-bucket
+      - SQS_QUEUE_URL=http://localhost:9324/queue/file-queue
+    depends_on:
+      - localstack
+
+  process-service:
+    build:
+      context: ../../src/process_service
+    environment:
+      - S3_BUCKET_NAME=local-bucket
+      - SQS_QUEUE_URL=http://localhost:9324/queue/file-queue
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/file_service
+    depends_on:
+      - postgres
+      - localstack
+
+  postgres:
+    image: postgres:12
+    environment:
+      - POSTGRES_DB=file_service
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+  localstack:
+    image: localstack/localstack
+    ports:
+      - "9324:4566"
+    environment:
+      - SERVICES=s3,sqs
+      - DATA_DIR=/tmp/localstack/data
+    volumes:
+      - ./localstack:/tmp/localstack/data

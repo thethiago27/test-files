@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: upload-service
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: upload-service
+  template:
+    metadata:
+      labels:
+        app: upload-service
+    spec:
+      containers:
+      - name: upload-service
+        image: your-docker-registry/upload-service:latest
+        env:
+        - name: S3_BUCKET_NAME
+          value: prod-bucket
+        - name: SQS_QUEUE_URL
+          value: https://sqs.aws-region.amazonaws.com/your-account-id/file-queue
